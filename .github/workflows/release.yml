@@ -63,7 +63,4 @@ jobs:
       #     files: target/release-binaries/*
 
       - name: Publish to crates.io
-        run: |
-          ls -lAh
-          git status
-          cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --dry-run --verbose
+        run: cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --dry-run --verbose
