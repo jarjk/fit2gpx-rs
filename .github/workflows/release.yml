@@ -41,7 +41,7 @@ jobs:
             echo "binary found: '$bin_path'"
             tar_path="$platform.tar.gz"
             echo "tarring up..."; tar -czvf "$platform.tar.gz" "$bin_path"
-            echo "hashing..."; sha256sum "$tar_path" > "$platform.sha256"
+            echo "hashing..."; sha256sum "$tar_path" > "$tar_path.sha256"
 
             mv *.tar.gz *.sha256 .. # the files we need
             cd .. # $platform/..
@@ -65,10 +65,10 @@ jobs:
       - name: Publish to crates.io
         shell: bash
         run: |
-          version="$(grep version Cargo.toml | head -n1 | cut -d '"' -f2)"
+          version="v$(grep version Cargo.toml | head -n1 | cut -d '"' -f2)"
           git_tag="$(basename ${{ github.ref }})"
           echo "Cargo.toml version is: '$version', github tag is: '$git_tag'"
-          if [ "v$version" != "$git_tag" ]; then
+          if [ "$version" != "$git_tag" ]; then
             echo "error: they don't match!"; exit 1
           fi
           cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --verbose
