@@ -1,7 +1,7 @@
 [package]
 name = "fit2gpx"
 version = "0.6.0"
-edition = "2021"
+edition = "2024"
 
 authors = ["Jeromos Kovács <iitsnotme214@proton.me>"]
 description = ".fit to .gpx converter"

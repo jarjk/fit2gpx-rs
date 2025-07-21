@@ -1,4 +1,4 @@
-use crate::{utils, Res};
+use crate::{Res, utils};
 use gpx::Waypoint;
 use rayon::prelude::*;
 pub use std::{

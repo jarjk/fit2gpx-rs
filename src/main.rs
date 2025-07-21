@@ -1,7 +1,7 @@
 use clap::Parser;
 #[cfg(feature = "elevation")]
 use fit2gpx::elevation::*;
-use fit2gpx::{fit::Fit, Res};
+use fit2gpx::{Res, fit::Fit};
 use rayon::prelude::*;
 
 mod args;
