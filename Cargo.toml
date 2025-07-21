@@ -1,6 +1,6 @@
 [package]
 name = "fit2gpx"
-version = "0.6.0"
+version = "0.6.1"
 edition = "2024"
 
 authors = ["Jeromos Kovács <iitsnotme214@proton.me>"]
