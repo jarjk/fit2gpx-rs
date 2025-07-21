@@ -54,13 +54,14 @@ jobs:
 
           ls -lARh target/release-binaries # beautiful!
 
-      - name: Create GitHub Release
-        id: create_release
+      - name: Draft a GitHub release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           generate_release_notes: true
           files: target/release-binaries/*
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
 
       - name: Publish to crates.io
-        run: cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --dry-run --verbose
+        if: "! (contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc'))"
+        run: cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --verbose --dry-run
