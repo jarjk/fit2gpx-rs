@@ -1,6 +1,6 @@
-use crate::{utils, Res};
-use fit_file::{fit_file, FitFieldValue, FitRecordMsg};
-use geo_types::{coord, Point};
+use crate::{Res, utils};
+use fit_file::{FitFieldValue, FitRecordMsg, fit_file};
+use geo_types::{Point, coord};
 use gpx::{Gpx, GpxVersion, Track, TrackSegment, Waypoint};
 use std::path::{Path, PathBuf};
 use std::{fs, io};
@@ -16,6 +16,7 @@ pub struct Fit {
 // public fns
 impl Fit {
     /// add a filename to `self`, create new instance
+    #[must_use]
     pub fn with_filename(self, fname: impl Into<PathBuf>) -> Self {
         Fit {
             file_name: fname.into(),

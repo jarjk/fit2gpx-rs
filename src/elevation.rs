@@ -1,4 +1,4 @@
-use crate::{utils, Res};
+use crate::{Res, utils};
 use gpx::Waypoint;
 use rayon::prelude::*;
 pub use std::{
@@ -13,6 +13,7 @@ pub type ElevData = HashMap<Coord, srtm_reader::Tile>;
 
 /// collect all the [`srtm_reader::Tile`]'s [`Coord`]s that shall be loaded into memory
 /// in order to be able to get [`ElevData`] for all [`gpx::Waypoint`]s
+#[must_use]
 pub fn needed_tile_coords(wps: &[Waypoint]) -> BTreeSet<Coord> {
     // kinda Waypoint to Coord
     let trunc = |wp: &Waypoint| -> Coord {
@@ -47,6 +48,7 @@ pub fn read_needed_tiles(
         .collect()
 }
 /// index the [`srtm_reader::Tile`]s with their coordinates
+#[must_use]
 pub fn index_tiles(tiles: Vec<srtm_reader::Tile>) -> ElevData {
     log::info!("indexing all dem tiles");
     log::trace!("tiles: {tiles:?}");
