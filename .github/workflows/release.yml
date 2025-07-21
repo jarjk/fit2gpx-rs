@@ -1,0 +1,72 @@
+name: Automatic trigger draft release on tag push
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  call-check-build:
+    uses: ./.github/workflows/check-build.yml
+
+  auto-release:
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'    
+    needs: call-check-build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download prebuilt binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List all downloaded artifacts
+        run: ls -ARh artifacts/
+
+      - name: Organize Artifacts
+        run: |
+          exit
+          # Create a directory for the final binaries
+          mkdir -p target/release-binaries
+
+          # Loop through each artifact subdirectory
+          for artifact_dir in artifacts/*/; do
+            # Get the platform name from the directory name
+            platform=$(basename $artifact_dir)
+
+            # Move and rename the file(s) inside the subdirectory
+            for file in $artifact_dir/*; do
+              filename=$(basename $file)
+  
+              # Check if the file has an extension
+              if [[ "$filename" == *.* ]]; then
+                extension="${filename##*.}" # Extract file extension
+                new_name="$platform.$extension"
+              else
+                new_name="$platform" # No extension, use platform name as the filename
+              fi
+
+              # Move and rename the file
+              mv "$file" "target/release-binaries/$new_name"
+            done
+
+            # Remove the now-empty subdirectory
+            rmdir $artifact_dir
+          done
+
+      # - name: Create GitHub Release
+      #   id: create_release
+
+      #   uses: softprops/action-gh-release@v2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      #   with:
+      #     files: target/release-binaries/*
+
+      - name: Publish to crates.io
+        run: |
+          ls -la
+          git status
+          cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --dry-run --verbose
