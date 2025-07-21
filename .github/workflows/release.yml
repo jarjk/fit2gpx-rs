@@ -41,7 +41,7 @@ jobs:
             echo "binary found: '$bin_path'"
             tar_path="$platform.tar.gz"
             echo "tarring up..."; tar -czvf "$platform.tar.gz" "$bin_path"
-            echo "hashing..."; sha256sum "$tar_path" > "$platform.sha256"
+            echo "hashing..."; sha256sum "$tar_path" > "$tar_path.sha256"
 
             mv *.tar.gz *.sha256 .. # the files we need
             cd .. # $platform/..
