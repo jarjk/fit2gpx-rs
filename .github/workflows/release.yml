@@ -65,10 +65,10 @@ jobs:
       - name: Publish to crates.io
         shell: bash
         run: |
-          version="$(grep version Cargo.toml | head -n1 | cut -d '"' -f2)"
+          version="v$(grep version Cargo.toml | head -n1 | cut -d '"' -f2)"
           git_tag="$(basename ${{ github.ref }})"
           echo "Cargo.toml version is: '$version', github tag is: '$git_tag'"
-          if [ "v$version" != "$git_tag" ]; then
+          if [ "$version" != "$git_tag" ]; then
             echo "error: they don't match!"; exit 1
           fi
           cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --verbose
