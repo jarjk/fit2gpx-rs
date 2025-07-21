@@ -47,8 +47,16 @@ jobs:
                 new_name="$platform" # No extension, use platform name as the filename
               fi
 
+              new_path="target/release-binaries/$new_name"
+
               # Move and rename the file
-              mv "$file" "target/release-binaries/$new_name"
+              mv "$file" "$new_path"
+
+              done_path="$new_path.tar.gz"
+              tar -czvf "$done_path" "$new_path"
+              rm "$new_path"
+
+              sha256sum "$done_path" > "$new_path.sha256"
             done
 
             # Remove the now-empty subdirectory
@@ -57,12 +65,6 @@ jobs:
           ls -lARh artifacts
           ls -lARh target/release-binaries
           rmdir artifacts
-
-      # - name: Zip binaries
-      #   run: tar
-
-      # - name: Create hashes
-      #   run: sha256sum
 
       # - name: Create GitHub Release
       #   id: create_release
