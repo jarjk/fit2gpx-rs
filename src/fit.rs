@@ -16,6 +16,7 @@ pub struct Fit {
 // public fns
 impl Fit {
     /// add a filename to `self`, create new instance
+    #[must_use]
     pub fn with_filename(self, fname: impl Into<PathBuf>) -> Self {
         Fit {
             file_name: fname.into(),
