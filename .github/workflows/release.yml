@@ -27,44 +27,32 @@ jobs:
 
       - name: Organize artifacts, subdirectory to single file
         run: |
-          # Create a directory for the final binaries
-          mkdir -p target/release-binaries
+          set -e # exit on errors
+
+          cd artifacts
+          echo "pwd: '$(pwd)'"
 
           # Loop through each artifact subdirectory
-          for artifact_dir in artifacts/*/; do
-            # Get the platform name from the directory name
-            platform=$(basename $artifact_dir)
+          for platform in $(ls); do
+            echo "working on: '$platform'"
+            cd "$platform" # NOTE: needed for tar & sha256sum
 
-            # Move and rename the file(s) inside the subdirectory
-            for file in $artifact_dir/*; do
-              filename=$(basename $file)
-  
-              # Check if the file has an extension
-              if [[ "$filename" == *.* ]]; then
-                extension="${filename##*.}" # Extract file extension
-                new_name="$platform.$extension"
-              else
-                new_name="$platform" # No extension, use platform name as the filename
-              fi
+            bin_path="$(ls)" # WARN: errors if more 
+            echo "binary found: '$bin_path'"
+            tar_path="$platform.tar.gz"
+            echo "tarring up..."; tar -czvf "$platform.tar.gz" "$bin_path"
+            echo "hashing..."; sha256sum "$tar_path" > "$platform.sha256"
 
-              new_path="target/release-binaries/$new_name"
-
-              # Move and rename the file
-              mv "$file" "$new_path"
-
-              done_path="$new_path.tar.gz"
-              tar -czvf "$done_path" "$new_path"
-              rm "$new_path"
-
-              sha256sum "$done_path" > "$new_path.sha256"
-            done
-
-            # Remove the now-empty subdirectory
-            rmdir $artifact_dir
+            mv *.tar.gz *.sha256 .. # the files we need
+            cd .. # $platform/..
+            rm -r "$platform" # remove the now-empty subdirectory
           done
-          ls -lARh artifacts
-          ls -lARh target/release-binaries
-          rmdir artifacts
+          cd .. # artifacts/..
+
+          mkdir -p target # should be present, so just in case
+          mv artifacts target/release-binaries # target is in .gitignore, cargo publish won't cry
+
+          ls -lARh target/release-binaries # beautiful!
 
       # - name: Create GitHub Release
       #   id: create_release
