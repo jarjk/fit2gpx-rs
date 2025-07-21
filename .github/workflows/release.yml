@@ -25,7 +25,7 @@ jobs:
       - name: List all downloaded artifacts
         run: ls -lARh artifacts
 
-      - name: Organize artifacts, subdirectory to single file
+      - name: Prepare artifacts, tar, sha
         run: |
           set -e # exit on errors
 
