@@ -54,13 +54,13 @@ jobs:
 
           ls -lARh target/release-binaries # beautiful!
 
-      # - name: Create GitHub Release
-      #   id: create_release
-      #   uses: softprops/action-gh-release@v2
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      #   with:
-      #     files: target/release-binaries/*
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: target/release-binaries/*
 
       - name: Publish to crates.io
         run: cargo publish --token "${{ secrets.CRATESIO_TOKEN }}" --dry-run --verbose
