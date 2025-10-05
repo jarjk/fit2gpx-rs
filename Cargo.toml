@@ -27,3 +27,9 @@ time = { version = "0.3.44", default-features = false }
 [features]
 default = ["elevation"]
 elevation = ["dep:srtm_reader"]
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+# panic = "abort"
