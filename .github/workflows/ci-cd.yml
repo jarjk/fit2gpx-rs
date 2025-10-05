@@ -3,7 +3,7 @@ name: Check for errors, clippy, format, test and build
 on:
   push:
     branches: ["main"]
-    tags: "v*.*.*"
+    tags: ["v*.*.*"]
   pull_request:
   workflow_dispatch:
   workflow_call:
@@ -43,14 +43,18 @@ jobs:
       - name: Check code with clippy
         run: cargo clippy --target ${{ matrix.target }} --all-targets --verbose
 
-      - name: Build in release mode
-        run: cargo build --target ${{ matrix.target }} --release --verbose
+      - name: Set build mode
+        shell: bash
+        run: if [ "${{github.ref_type}}" == "tag" ]; then echo "BMODE=release">>"$GITHUB_ENV"; fi
+
+      - name: Build in ${{env.BMODE || 'debug'}} mode
+        run: cargo build --target ${{ matrix.target }} --verbose --${{env.BMODE}}
 
       - name: Prepare artifact
         shell: bash
         run: |
           mkdir -p dist
-          cp "target/${{ matrix.target }}/release/fit2gpx${{ matrix.ext }}" dist/fit2gpx-rs-${{ matrix.target }}${{ matrix.ext }}
+          cp "target/${{ matrix.target }}/${{env.BMODE || 'debug'}}/fit2gpx${{ matrix.ext }}" dist/fit2gpx-rs-${{ matrix.target }}${{ matrix.ext }}
           tree dist || ls -la dist
 
       - name: Upload artifacts
@@ -58,7 +62,7 @@ jobs:
         with:
           name: fit2gpx-rs-${{ matrix.target }}
           path: dist/fit2gpx*
-    
+
   auto-release:
     name: Release on tag push
     runs-on: ubuntu-latest
@@ -69,7 +73,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: '**/fit2gpx-rs-*'
+          pattern: "**/fit2gpx-rs-*"
           path: target/release-artifacts
           merge-multiple: true
 
