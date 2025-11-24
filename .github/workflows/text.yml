@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Typo Checker
-        uses: crate-ci/typos@v1.39.0
+        uses: crate-ci/typos@v1.39.2
 
       - name: Link Checker
         id: lychee
