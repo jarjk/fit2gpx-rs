@@ -58,7 +58,7 @@ jobs:
           tree dist || ls -la dist
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: fit2gpx-rs-${{ matrix.target }}
           path: dist/fit2gpx*
