@@ -19,7 +19,7 @@ fit_file = "0.6"
 geo-types = "0.7"
 gpx = "0.10"
 log = "0.4"
-rayon = "1.11"
+rayon = "1.12"
 srtm_reader = { version = "0.5", optional = true }
 time = { version = "0.3", default-features = false }
 
