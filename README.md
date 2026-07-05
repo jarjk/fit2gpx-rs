@@ -85,8 +85,7 @@ Yes.
 
 ## Why might this one not be the right choice
 
-[gpx][gpx-crate] lib doesn't support gpx extensions, so neither do we.
-After [this issue](https://github.com/georust/gpx/issues/8) is resolved, this shall be resolved soon.
+GPX export is implemented directly with [`quick-xml`][quick-xml-crate], including common Garmin track-point extensions.
 
 ### it doesn't support strava bulk-export stuff
 
@@ -98,11 +97,11 @@ After [this issue](https://github.com/georust/gpx/issues/8) is resolved, this sh
 <!-- -   [coordinate-altitude](https://github.com/jarjk/coordinate-altitude) -->
 
 -   [fit_file](https://crates.io/crates/fit_file): reading .fit
--   [gpx][gpx-crate]: writing .gpx
+-   [quick-xml][quick-xml-crate]: writing .gpx
 -   [clap](https://crates.io/crates/clap): argument parsing
 -   [rayon](https://crates.io/crates/rayon): multi-threadedness
 -   [srtm](https://github.com/jarjk/srtm_reader): reading elevation data from SRTM [DTM][dtm-wiki] files
 
 [fit2gpx-rs]: https://github.com/jarjk/fit2gpx-rs
-[gpx-crate]: https://crates.io/crates/gpx
+[quick-xml-crate]: https://crates.io/crates/quick-xml
 [dtm-wiki]: https://en.wikipedia.org/wiki/Digital_elevation_model

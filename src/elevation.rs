@@ -1,5 +1,5 @@
+use crate::fit::TrackPoint;
 use crate::{Res, utils};
-use gpx::Waypoint;
 use rayon::prelude::*;
 pub use std::{
     collections::{BTreeSet, HashMap},
@@ -12,14 +12,11 @@ pub type Coord = (i8, i16);
 pub type ElevData = HashMap<Coord, srtm_reader::Tile>;
 
 /// collect all the [`srtm_reader::Tile`]'s [`Coord`]s that shall be loaded into memory
-/// in order to be able to get [`ElevData`] for all [`gpx::Waypoint`]s
+/// in order to be able to get [`ElevData`] for all [`TrackPoint`]s
 #[must_use]
-pub fn needed_tile_coords(wps: &[Waypoint]) -> BTreeSet<Coord> {
-    // kinda Waypoint to Coord
-    let trunc = |wp: &Waypoint| -> Coord {
-        let (x, y) = wp.point().x_y();
-        (y.trunc() as i8, x.trunc() as i16)
-    };
+pub fn needed_tile_coords(wps: &[TrackPoint]) -> BTreeSet<Coord> {
+    // kinda TrackPoint to Coord
+    let trunc = |wp: &TrackPoint| -> Coord { (wp.lat.trunc() as i8, wp.lon.trunc() as i16) };
     // tiles we need
     wps.par_iter()
         .filter(|wp| !utils::is_00(wp))
@@ -92,10 +89,7 @@ impl crate::Fit {
     /// **_NOTE_**: an elevation read from the [`srtm_reader::Tile`] will be applied whether [`Some`] or [`None`]
     pub fn add_elev_loaded(&mut self, elev_data: &ElevData, overwrite: bool) -> Res<()> {
         // coord is (x;y) but we need (y;x)
-        let xy_yx = |wp: &Waypoint| -> srtm_reader::Coord {
-            let (x, y) = wp.point().x_y();
-            (y, x).into()
-        };
+        let xy_yx = |wp: &TrackPoint| -> srtm_reader::Coord { (wp.lat, wp.lon).into() };
         Ok(self
             .track_segment
             .points
