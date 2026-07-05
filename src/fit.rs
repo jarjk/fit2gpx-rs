@@ -1,10 +1,27 @@
 use crate::{Res, utils};
 use fit_file::{FitFieldValue, FitRecordMsg, fit_file};
-use geo_types::{Point, coord};
-use gpx::{Gpx, GpxVersion, Track, TrackSegment, Waypoint};
 use std::path::{Path, PathBuf};
 use std::{fs, io};
 use time::OffsetDateTime;
+
+#[derive(Default, Clone)]
+pub struct TrackSegment {
+    pub points: Vec<TrackPoint>,
+}
+
+#[derive(Default, Clone, Debug)]
+pub struct TrackPoint {
+    pub lat: f64,
+    pub lon: f64,
+    pub elevation: Option<f64>,
+    pub time: Option<OffsetDateTime>,
+    pub speed: Option<f64>,
+    pub heart_rate: Option<u8>,
+    pub cadence: Option<u8>,
+    pub temperature: Option<i8>,
+    pub power: Option<u16>,
+    pub distance: Option<f64>,
+}
 
 /// Fit Context structure. An instance of this will be passed to the parser and ultimately to the callback function so we can use it for whatever.
 #[derive(Default, Clone)]
@@ -44,8 +61,7 @@ impl Fit {
         fit_file::read(&mut bufread, Self::callback, &mut fit)?;
 
         fit.track_segment.points.retain(|wp| {
-            let (x, y) = wp.point().x_y();
-            !utils::is_00(wp) && (-90. ..90.).contains(&y) && (-180. ..180.).contains(&x)
+            !utils::is_00(wp) && (-90. ..90.).contains(&wp.lat) && (-180. ..180.).contains(&wp.lon)
         });
         Ok(fit)
     }
@@ -71,15 +87,13 @@ impl Fit {
     /// # Errors
     /// can't write gpx
     pub fn save_to_gpx(self, fname: impl AsRef<Path>) -> Res<()> {
-        let gpx: Gpx = self.into();
-        utils::write_gpx_to_file(gpx, fname)
+        utils::write_gpx_to_file(&self.track_segment.points, fname)
     }
 }
 /// private fns
 impl Fit {
-    /// [`fit_file::FitRecordMsg`] to [`gpx::Waypoint`]
-    // TODO: support heart-rate, distance, temperature and such extensions, if `gpx` crate does too
-    fn frm_to_gwp(frm: FitRecordMsg) -> Waypoint {
+    /// [`fit_file::FitRecordMsg`] to [`TrackPoint`]
+    fn frm_to_gwp(frm: FitRecordMsg) -> TrackPoint {
         let time = frm.timestamp.unwrap_or(0);
         let time = OffsetDateTime::from_unix_timestamp(time.into()).ok();
 
@@ -101,25 +115,24 @@ impl Fit {
             frm.speed.map(Into::into)
         }
         .map(f64::from);
-        // .map(|spd| spd as f64 / 1000. * 3.6); // km/h
+        let heart_rate = frm.heart_rate;
+        let cadence = frm.cadence;
+        let temperature = frm.temperature;
+        let power = frm.power;
+        let distance = frm.distance.map(f64::from);
 
-        // let hr = frm
-        //     .heart_rate
-        //     .map(|hr| hr.checked_add(1))
-        //     .unwrap_or(Some(0))
-        //     .unwrap_or(0);
-
-        // let temp = frm.temperature.unwrap_or(i8::MIN);
-
-        let geo_point = Point(coord! {x: lon, y: lat});
-
-        let mut wp = Waypoint::new(geo_point);
-
-        wp.elevation = alt.map(Into::into);
-        wp.time = time.map(Into::into);
-        wp.speed = speed;
-
-        wp
+        TrackPoint {
+            lat,
+            lon,
+            elevation: alt.map(Into::into),
+            time,
+            speed,
+            heart_rate,
+            cadence,
+            temperature,
+            power,
+            distance,
+        }
     }
     /// Called for each record message as it is being processed.
     fn callback(
@@ -143,20 +156,6 @@ impl Fit {
 
             let wp = Self::frm_to_gwp(msg);
             data.track_segment.points.push(wp);
-        }
-    }
-}
-impl From<Fit> for Gpx {
-    fn from(fit: Fit) -> Self {
-        // Instantiate Gpx struct
-        let track = Track {
-            segments: vec![fit.track_segment],
-            ..Track::default()
-        };
-        Self {
-            version: GpxVersion::Gpx11,
-            tracks: vec![track],
-            ..Self::default()
         }
     }
 }
