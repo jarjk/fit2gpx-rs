@@ -18,7 +18,7 @@ env_logger = { version = "0.11", features = [
   "auto-color",
   "humantime",
 ], default-features = false }
-rustyfit = "0.9"
+rustyfit = "0.10"
 geo-types = "0.7"
 gpx = "0.10"
 log = "0.4"
