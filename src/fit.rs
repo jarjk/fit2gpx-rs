@@ -48,30 +48,30 @@ impl Fit {
         let mut stream = dec.stream(FromStd::new(&mut bufread));
 
         while let Some(event) = stream.next() {
-            if let DecoderEvent::Message(mesg) = event? {
-                if mesg.num == typedef::MesgNum::RECORD {
-                    let rec = mesgdef::Record::from(mesg);
+            if let DecoderEvent::Message(mesg) = event?
+                && mesg.num == typedef::MesgNum::RECORD
+            {
+                let rec = mesgdef::Record::from(mesg);
 
-                    let Some(xv) = rec.position_long_degrees() else {
-                        continue;
-                    };
-                    let Some(yv) = rec.position_lat_degrees() else {
-                        continue;
-                    };
-                    let mut wp = Waypoint::new(Point(coord! { x: xv, y: yv }));
+                let Some(xv) = rec.position_long_degrees() else {
+                    continue;
+                };
+                let Some(yv) = rec.position_lat_degrees() else {
+                    continue;
+                };
+                let mut wp = Waypoint::new(Point(coord! { x: xv, y: yv }));
 
-                    if let Some(t) = rec.timestamp.unix_timestamp() {
-                        wp.time = Some(OffsetDateTime::from_unix_timestamp(t).unwrap().into());
-                    }
-
-                    wp.elevation = rec
-                        .enhanced_altitude_scaled()
-                        .or_else(|| rec.altitude_scaled());
-
-                    wp.speed = rec.enhanced_speed_scaled().or_else(|| rec.speed_scaled());
-
-                    fit.track_segment.points.push(wp);
+                if let Some(t) = rec.timestamp.unix_timestamp() {
+                    wp.time = Some(OffsetDateTime::from_unix_timestamp(t).unwrap().into());
                 }
+
+                wp.elevation = rec
+                    .enhanced_altitude_scaled()
+                    .or_else(|| rec.altitude_scaled());
+
+                wp.speed = rec.enhanced_speed_scaled().or_else(|| rec.speed_scaled());
+
+                fit.track_segment.points.push(wp);
             }
         }
 
