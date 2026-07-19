@@ -1,4 +1,4 @@
-# [fit2gpx-rs][fit2gpx-rs]: efficient fit to gpx converter 
+# [fit2gpx-rs][fit2gpx-rs]: efficient fit to gpx converter
 
 ## Installation
 
@@ -15,12 +15,12 @@ You could use [eget](https://github.com/zyedidia/eget) or something similar as w
 
 ### build
 
-1.  have a Rust supported platform, eg.: linux, macos, windows
-2.  have [Rust](https://rust-lang.org) installed
-3.  install
-    -   with `cargo` from [crates.io](https://crates.io): `cargo install fit2gpx`
-    -   with `cargo` from [source][fit2gpx-rs]: `cargo install --locked --git "https://github.com/jarjk/fit2gpx-rs"`
-    -   with `git` and `cargo`: cloning, then building from [source][fit2gpx-rs]:
+1. have a Rust supported platform, eg.: linux, macos, windows
+2. have [Rust](https://rust-lang.org) installed
+3. install
+    - with `cargo` from [crates.io](https://crates.io): `cargo install fit2gpx`
+    - with `cargo` from [source][fit2gpx-rs]: `cargo install --locked --git "https://github.com/jarjk/fit2gpx-rs"`
+    - with `git` and `cargo`: cloning, then building from [source][fit2gpx-rs]:
 
 ```sh
 git clone --depth 1 "https://github.com/jarjk/fit2gpx-rs"
@@ -59,8 +59,8 @@ awesome plots with this tool: [stravavis](https://github.com/marcusvolz/strava_p
 A ***significantly faster*** alternative to the great (but not frequently updated)
 [**_fit2gpx_**](https://github.com/dodo-saba/fit2gpx) with the ability to add elevation data while converting.
 
--   [FIT](https://developer.garmin.com/fit/overview/) is a GIS data file format used by Garmin GPS sport devices and Garmin software
--   [GPX](https://docs.fileformat.com/gis/gpx/) is an XML based format for GNSS tracks
+- [FIT](https://developer.garmin.com/fit/overview/) is a GIS data file format used by Garmin GPS sport devices and Garmin software
+- [GPX](https://docs.fileformat.com/gis/gpx/) is an XML based format for GNSS tracks
 
 ## Is it any good?
 
@@ -68,20 +68,20 @@ Yes.
 
 ## Why
 
--   it's damn fast
--   it can add elevation data
--   should be fairly well maintained
--   providing Rust library
--   it's fun
+- it's damn fast
+- it can add elevation data
+- should be fairly well maintained
+- providing Rust library
+- it's fun
 
 ## How to add elevation data
 
--   first of all, have [DTM][dtm-wiki] data: `.hgt` files downloaded
-    one great source is [Sonny's collection](https://sonny.4lima.de/), it's only for Europe though
--   then unzip everything, place all of the `.hgt` files to a single directory
--   set `$ELEV_DATA_DIR` to that very directory or pass `--elev_data_dir ~/my_elevation_data_dir`
--   make sure that `elevation` feature is enabled, _it's the default_
--   pass the `--add_elevation | -a` flag to `fit2gpx`
+- first of all, have [DTM][dtm-wiki] data: `.hgt` files downloaded
+  one great source is [Sonny's collection](https://sonny.4lima.de/), it's only for Europe though
+- then unzip everything, place all of the `.hgt` files to a single directory
+- set `$ELEV_DATA_DIR` to that very directory or pass `--elev_data_dir ~/my_elevation_data_dir`
+- make sure that `elevation` feature is enabled, _it's the default_
+- pass the `--add_elevation | -a` flag to `fit2gpx`
 
 ## Why might this one not be the right choice
 
@@ -90,18 +90,12 @@ After [this issue](https://github.com/georust/gpx/issues/8) is resolved, this sh
 
 ### it doesn't support strava bulk-export stuff
 
--   unzipping `.gz` files. __solution__: in your activities directory run `gzip -d *.gz`
--   adding metadata to gpx files from the `activities.csv` file
+- unzipping `.gz` files. **solution**: in your activities directory run `gzip -d *.gz`
+- adding metadata to gpx files from the `activities.csv` file
 
-## Direct dependencies
+## Acknowledgements
 
-<!-- -   [coordinate-altitude](https://github.com/jarjk/coordinate-altitude) -->
-
--   [fit_file](https://crates.io/crates/fit_file): reading .fit
--   [gpx][gpx-crate]: writing .gpx
--   [clap](https://crates.io/crates/clap): argument parsing
--   [rayon](https://crates.io/crates/rayon): multi-threadedness
--   [srtm](https://github.com/jarjk/srtm_reader): reading elevation data from SRTM [DTM][dtm-wiki] files
+Direct dependencies, see [Cargo.toml](./Cargo.toml)
 
 [fit2gpx-rs]: https://github.com/jarjk/fit2gpx-rs
 [gpx-crate]: https://crates.io/crates/gpx
