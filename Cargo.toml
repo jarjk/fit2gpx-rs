@@ -35,4 +35,4 @@ elevation = ["dep:srtm_reader"]
 strip = true
 lto = true
 codegen-units = 1
-# panic = "abort"
+panic = "abort"

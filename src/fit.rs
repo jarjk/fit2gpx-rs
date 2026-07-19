@@ -61,8 +61,10 @@ impl Fit {
                 };
                 let mut wp = Waypoint::new(Point(coord! { x: xv, y: yv }));
 
-                if let Some(t) = rec.timestamp.unix_timestamp() {
-                    wp.time = Some(OffsetDateTime::from_unix_timestamp(t).unwrap().into());
+                if let Some(t) = rec.timestamp.unix_timestamp()
+                    && let Ok(dt) = OffsetDateTime::from_unix_timestamp(t)
+                {
+                    wp.time = Some(dt.into());
                 }
 
                 wp.elevation = rec
