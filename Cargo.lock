@@ -459,9 +459,9 @@ dependencies = [
 
 [[package]]
 name = "srtm_reader"
-version = "0.5.1"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b913ef6704c209873fdc6c0451f09ec52e238ed1a431b3ed3fab78599339cdf"
+checksum = "db83517cccdd428a1b260ea7864966231250e2fa03a4b7e6843e7bb1c41dc984"
 
 [[package]]
 name = "strsim"
