@@ -11,6 +11,10 @@
 #![doc = include_str!("../examples/demo.rs")]
 //! ```
 
+#![deny(clippy::unwrap_used)]
+#![deny(clippy::expect_used)]
+#![deny(unsafe_code)]
+
 /// universal Result, but not sendable
 pub type Res<T> = Result<T, Box<dyn std::error::Error>>;
 
