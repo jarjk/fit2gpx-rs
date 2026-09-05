@@ -103,7 +103,7 @@ impl crate::Fit {
             .filter(|wp| (wp.elevation.is_none() || overwrite) && !utils::is_00(wp))
             .try_for_each(|wp| {
                 let coord = xy_yx(wp);
-                if let Some(elev_data) = elev_data.get(&coord.trunc()) {
+                if let Some(elev_data) = elev_data.get(&coord.floor()) {
                     let elev = elev_data.get(coord);
                     wp.elevation = elev.map(|x| f64::from(*x));
                     Ok(())
