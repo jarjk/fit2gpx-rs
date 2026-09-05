@@ -6,7 +6,7 @@ pub use std::{
     path::Path,
 };
 
-/// truncated coordinate
+/// floored coordinate
 pub type Coord = (i8, i16);
 /// loaded elevation data, consisting of [`Coord`]s mapped to [`srtm_reader::Tile`]
 pub type ElevData = HashMap<Coord, srtm_reader::Tile>;
@@ -16,14 +16,14 @@ pub type ElevData = HashMap<Coord, srtm_reader::Tile>;
 #[must_use]
 pub fn needed_tile_coords(wps: &[Waypoint]) -> BTreeSet<Coord> {
     // kinda Waypoint to Coord
-    let trunc = |wp: &Waypoint| -> Coord {
+    let floor = |wp: &Waypoint| -> Coord {
         let (x, y) = wp.point().x_y();
-        (y.trunc() as i8, x.trunc() as i16)
+        (y.floor() as i8, x.floor() as i16)
     };
     // tiles we need
     wps.par_iter()
         .filter(|wp| !utils::is_00(wp))
-        .map(trunc)
+        .map(floor)
         .collect()
 }
 
