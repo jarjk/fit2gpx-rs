@@ -20,7 +20,7 @@ geo-types = "0.7"
 gpx = "0.10"
 log = "0.4"
 rayon = "1.12"
-srtm_reader = { version = "0.5", optional = true }
+srtm_reader = { version = "=0.5.2", optional = true }
 time = { version = "0.3", default-features = false }
 
 [features]
