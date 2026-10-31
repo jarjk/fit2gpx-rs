@@ -83,8 +83,11 @@ impl Fit {
         let time = frm.timestamp.unwrap_or(0);
         let time = OffsetDateTime::from_unix_timestamp(time.into()).ok();
 
+        let point6precision = |prec: f64| (prec * 1_000_000.).round() / 1_000_000.;
         let lat = fit_file::semicircles_to_degrees(frm.position_lat.unwrap_or(0));
+        let lat = point6precision(lat);
         let lon = fit_file::semicircles_to_degrees(frm.position_long.unwrap_or(0));
+        let lon = point6precision(lon);
 
         let alt = if let Some(enh_alt) = frm.enhanced_altitude {
             Some(enh_alt)
