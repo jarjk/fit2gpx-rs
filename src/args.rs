@@ -17,5 +17,5 @@ pub struct Cli {
     pub add_elevation: bool,
     /// Whether already converted Gpx files shall be overwritten
     #[arg(short, long, default_value_t = false)]
-    pub overwrite: bool,
+    pub force: bool,
 }

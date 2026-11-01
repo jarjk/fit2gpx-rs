@@ -12,7 +12,7 @@ fn main() -> Res<()> {
     // collecting cli args
     let conf = args::Cli::parse();
     log::debug!("cli args: {conf:?}");
-    log::info!("should overwrite existing gpx: {}", conf.overwrite);
+    log::info!("should overwrite existing gpx: {}", conf.force);
 
     // reading all .fit files into memory, considering whether it should be overwritten
     let all_fit = conf
@@ -21,7 +21,7 @@ fn main() -> Res<()> {
         .filter(|f| {
             let is_fit = f.extension().is_some_and(|x| x == "fit");
             let converted = f.with_extension("gpx").exists();
-            let remains = is_fit && (conf.overwrite || !converted);
+            let remains = is_fit && (conf.force || !converted);
             if remains {
                 log::debug!("loading {f:?} into memory");
             } else {
@@ -44,7 +44,7 @@ fn main() -> Res<()> {
         #[cfg(feature = "elevation")]
         if conf.add_elevation {
             log::debug!("adding elevation to {:?}", fit.file_name);
-            if let Err(e) = fit.add_elev_loaded(&all_elev_data, conf.overwrite) {
+            if let Err(e) = fit.add_elev_loaded(&all_elev_data, conf.force) {
                 log::error!("{e}");
             }
         }
