@@ -93,6 +93,10 @@ After [this issue](https://github.com/georust/gpx/issues/8) is resolved, this sh
 -   unzipping `.gz` files. __solution__: in your activities directory run `gzip -d *.gz`
 -   adding metadata to gpx files from the `activities.csv` file
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
 ## Direct dependencies
 
 <!-- -   [coordinate-altitude](https://github.com/jarjk/coordinate-altitude) -->
