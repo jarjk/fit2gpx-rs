@@ -20,7 +20,7 @@ fn main() -> Res<()> {
         .par_iter()
         .filter(|f| {
             let is_fit = f.extension().is_some_and(|x| x == "fit");
-            let converted = f.with_extension("gpx").exists();
+            let converted = get_out_path(&conf, f).exists();
             let remains = is_fit && (conf.force || !converted);
             if remains {
                 log::debug!("loading {f:?} into memory");
@@ -33,6 +33,14 @@ fn main() -> Res<()> {
         })
         .flat_map(|f| Fit::from_file(f).inspect_err(|e| log::error!("read error: {e:?}")))
         .collect::<Vec<_>>();
+
+    if let Some(out_dir) = &conf.output
+        && conf.files.len() > 1
+    {
+        // `output_p` is a (non-existent) directory in this case
+        _ = std::fs::create_dir_all(&out_dir)
+            .inspect_err(|e| log::error!("creating output dir returned: {e:?}"));
+    }
 
     #[cfg(feature = "elevation")]
     let all_elev_data = read_elev_data(&conf, &all_fit);
@@ -53,7 +61,7 @@ fn main() -> Res<()> {
             log::warn!("{:?}: empty trkseg, ignoring...", fit.file_name);
             Ok(())
         } else {
-            let out_p = fit.file_name.with_extension("gpx");
+            let out_p = get_out_path(&conf, &fit.file_name);
             fit.save_to_gpx(out_p)
                 .inspect_err(|e| log::error!("conversion error: {e:?}"))
                 .map_err(|_| "conversion error")
@@ -61,6 +69,16 @@ fn main() -> Res<()> {
     })?;
 
     Ok(())
+}
+
+fn get_out_path(conf: &args::Cli, p: &std::path::PathBuf) -> std::path::PathBuf {
+    let p_gpx = p.with_extension("gpx");
+    match &conf.output {
+        Some(out_p) if conf.files.len() == 1 => out_p.clone(),
+        // `output_p` is a directory in this case
+        Some(dir) => dir.join(p_gpx.file_name().unwrap_or(std::ffi::OsStr::new("unknown"))),
+        None => p_gpx,
+    }
 }
 
 #[cfg(feature = "elevation")]
