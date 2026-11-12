@@ -38,7 +38,7 @@ fn main() -> Res<()> {
         && conf.files.len() > 1
     {
         // `output_p` is a (non-existent) directory in this case
-        _ = std::fs::create_dir_all(&out_dir)
+        _ = std::fs::create_dir_all(out_dir)
             .inspect_err(|e| log::error!("creating output dir returned: {e:?}"));
     }
 
@@ -71,7 +71,7 @@ fn main() -> Res<()> {
     Ok(())
 }
 
-fn get_out_path(conf: &args::Cli, p: &std::path::PathBuf) -> std::path::PathBuf {
+fn get_out_path(conf: &args::Cli, p: &std::path::Path) -> std::path::PathBuf {
     let p_gpx = p.with_extension("gpx");
     match &conf.output {
         Some(out_p) if conf.files.len() == 1 => out_p.clone(),
