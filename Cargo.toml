@@ -1,6 +1,6 @@
 [package]
 name = "fit2gpx"
-version = "0.6.2"
+version = "0.6.3"
 edition = "2024"
 authors = ["Jeromos Kovács <iitsnotme214@proton.me>"]
 description = ".fit to .gpx converter"
@@ -30,5 +30,5 @@ elevation = ["dep:srtm_reader"]
 [profile.release]
 strip = true
 lto = true
-codegen-units = 1
+# codegen-units = 1
 # panic = "abort"
